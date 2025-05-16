@@ -1,0 +1,133 @@
+# Secured and Monitored Web Infrastructure Explanation
+
+## Infrastructure Overview
+This secured and monitored three-server web infrastructure hosts www.foobar.com with enhanced security and monitoring:
+- 3 physical or virtual servers
+- 3 strategically positioned firewalls:
+  - 1 perimeter firewall (infrastructure protection)
+  - 1 application layer firewall (between load balancer and servers)
+  - 1 data layer firewall (database protection)
+- 1 SSL certificate for HTTPS encryption
+- 1 load balancer (HAproxy) for traffic distribution
+- 3 web servers (Nginx) to process HTTP requests
+- 3 application servers to execute business logic
+- 3 copies of application code (one per server)
+- 1 MySQL database cluster in Primary-Replica configuration:
+  - 1 primary instance (for write operations)
+  - At least 1 replica instance (for read operations and high availability)
+- 3 monitoring clients (Sumologic or equivalent) to monitor all components
+
+## Infrastructure Components
+
+### Physical/Virtual Servers
+- Three dedicated servers to provide redundancy and high availability
+- Servers are distributed to handle different aspects of the infrastructure
+- Each server is configured with appropriate resources based on its role
+
+### Firewall System
+Three firewalls are strategically positioned:
+- Perimeter firewall: Guards the entire infrastructure from external threats
+- Application layer firewall: Protects web and application servers
+- Data layer firewall: Secures database traffic and access
+
+Firewalls provide:
+- Control over incoming and outgoing network traffic
+- Protection against unauthorized access attempts
+- Implementation of security policies that protect server resources
+- Network segmentation and restricted communication between components
+- Prevention of various types of network attacks
+
+### SSL Certificate (HTTPS)
+SSL certificate is implemented to:
+- Encrypt traffic between the user's browser and the web servers
+- Protect sensitive data (credentials, personal information, etc.) from being intercepted
+- Verify the authenticity of the website to users
+- Improve trust and meet modern security standards
+- Comply with data protection regulations
+
+### Load Balancer (HAproxy)
+- Distributes incoming traffic across multiple web servers
+- Ensures no single server becomes overwhelmed
+- Provides failover capability if a server becomes unavailable
+- Can be configured for various load balancing algorithms
+- Improves overall system reliability and performance
+
+### Web Servers (Nginx)
+- Three Nginx instances to process and respond to HTTP requests
+- Handle static content delivery
+- Manage client connections
+- Provide initial request routing
+- Implement caching and compression for performance optimization
+
+### Application Servers
+- Three dedicated application servers to execute business logic
+- Process dynamic content and application-specific operations
+- Connect to the database layer for data operations
+- Separate from web servers to improve security and scalability
+- Enable independent scaling based on computational needs
+
+### Database Cluster (MySQL)
+MySQL database in Primary-Replica configuration:
+- Primary instance: Handles all write operations to ensure data consistency
+- Replica instance(s): Manages read operations to distribute database load
+- Provides data redundancy and high availability
+- Enables database failover if the primary instance becomes unavailable
+
+### Monitoring System
+Three monitoring clients (Sumologic or equivalent):
+- One installed on each server to monitor all components
+- Continuously collect performance data from servers and applications
+- Detect and alert on anomalies and potential issues
+- Provide visibility into system health and resource utilization
+- Track user experience metrics and enable capacity planning
+
+## Monitoring Configuration
+
+### How Monitoring is Used
+Monitoring provides real-time and historical insights into the infrastructure's operational status by:
+- Tracking server health (CPU, memory, disk, network)
+- Monitoring application performance
+- Measuring response times and error rates
+- Detecting security events and compliance issues
+- Analyzing traffic patterns and user behavior
+
+### Data Collection Method
+The monitoring clients collect data by:
+- Running as agents on each server
+- Collecting system metrics through OS APIs
+- Reading application logs
+- Tracking network traffic
+- Using custom checks and integrations
+- Sending the collected data to a centralized monitoring service (like Sumologic) for analysis and visualization
+
+### Monitoring Web Server QPS (Queries Per Second)
+To monitor web server QPS:
+1. Configure the monitoring agent to collect Nginx/Apache access logs
+2. Set up a metric that counts HTTP requests per second
+3. Create a dashboard displaying this metric over time
+4. Set up alerts for when QPS exceeds normal thresholds
+5. Analyze patterns to understand traffic behavior and optimize accordingly
+
+## Infrastructure Issues
+
+### SSL Termination at Load Balancer
+Terminating SSL at the load balancer level is problematic because:
+- Traffic between the load balancer and web servers would be unencrypted
+- Internal network traffic could be intercepted if the internal network is compromised
+- Violates end-to-end encryption principles
+- May not comply with certain security standards requiring full-path encryption
+
+### Single Write-Capable MySQL Server
+Having only one MySQL server capable of accepting writes is an issue because:
+- It becomes a single point of failure for write operations
+- If the primary database server fails, the application can't process transactions requiring data modifications
+- During primary database maintenance, write functionality is unavailable
+- Scaling write operations is limited by the capacity of a single server
+
+### Identical Server Components
+Having servers with all the same components (database, web server, and application server) might be problematic because:
+- It inefficiently allocates resources as different components have different resource needs
+- Security is more difficult to manage when all services are on the same machine
+- A single vulnerability could compromise multiple services
+- Scaling becomes less efficient as you cannot scale individual components based on their specific bottlenecks
+- Troubleshooting is more complex due to intertwined dependencies

@@ -1,0 +1,57 @@
+# Simple Web Stack Explanation
+
+![Simple Web Infrastructure](./images/0-simple_web_stack.svg)
+
+## Infrastructure Overview
+This is a simple web infrastructure consisting of a single server hosting all components needed to deliver the website www.foobar.com:
+- 1 server with IP 8.8.8.8
+- 1 web server (Nginx)
+- 1 application server
+- 1 set of application files (codebase)
+- 1 database (MySQL)
+- Domain name foobar.com with www record pointing to 8.8.8.8
+
+## User Request Flow
+1. A user wants to access the website by typing www.foobar.com in their browser
+2. The browser queries DNS servers to translate www.foobar.com into the IP address 8.8.8.8
+3. The request reaches the server at IP 8.8.8.8
+4. The web server (Nginx) receives the HTTP request
+5. Nginx passes the request to the application server
+6. The application server processes the request by executing the codebase
+7. The application may interact with the MySQL database if data retrieval/storage is needed
+8. The application server generates a response
+9. The response goes back through the web server and to the user's browser
+
+## Component Explanations
+
+### What is a server?
+A server is a physical or virtual computer dedicated to running software services to serve the needs of other computers (clients) over a network. Our server (8.8.8.8) hosts all the components needed for the web application to function.
+
+### Role of the domain name
+The domain name (foobar.com) provides a human-readable address for the website instead of requiring users to remember the IP address. It acts as an alias for the server's IP address.
+
+### Type of DNS record for www in www.foobar.com
+The "www" in www.foobar.com is a subdomain, and it is typically set up as a CNAME (Canonical Name) record in DNS configuration. However, in this specific case, it's configured as an A record that points directly to the IP address 8.8.8.8.
+
+### Role of the web server
+The web server (Nginx) handles HTTP requests from clients and serves static content. It acts as the entry point for all user requests and can also perform functions like load balancing, SSL termination, and acting as a reverse proxy for the application server.
+
+### Role of the application server
+The application server executes the application's business logic, processes dynamic content, and generates responses based on user requests. It runs the actual code of the web application and communicates with the database when necessary.
+
+### Role of the database
+The database (MySQL) stores and organizes the website's data in a structured way, providing mechanisms to store, retrieve, update, and manage data that the application uses. It ensures data persistence and efficient data management.
+
+### Communication protocol
+The server uses the HTTP/HTTPS protocol to communicate with the user's computer. This protocol defines how messages are formatted and transmitted over the web, allowing for the exchange of web pages and other content.
+
+## Issues with this infrastructure
+
+### Single Point of Failure (SPOF)
+Since all components are on a single server, if the server goes down, the entire website becomes unavailable. There's no redundancy or failover mechanism.
+
+### Downtime during maintenance
+When maintenance is needed, such as deploying new code or updating the web server, the website will experience downtime as the server or its services need to be restarted.
+
+### Limited scalability
+This infrastructure cannot easily handle significant increases in traffic. With all components on one server, there are limits to vertical scaling (adding more resources to the existing server), and no horizontal scaling (adding more servers) is implemented.

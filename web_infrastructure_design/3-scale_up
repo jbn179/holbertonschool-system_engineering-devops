@@ -1,0 +1,73 @@
+# Scaled Up Web Infrastructure Explanation
+
+## Infrastructure Overview
+This scaled-up web infrastructure adds component separation and increased redundancy:
+- 4 servers in total
+- 2 load balancers (HAproxy) configured as a cluster
+- 1 dedicated web server (Nginx)
+- 1 dedicated application server
+- 1 dedicated database server (MySQL)
+- Split components (each on their own server)
+
+## Infrastructure Components
+
+### Servers
+- 4 dedicated servers to provide enhanced reliability and component isolation
+- Each server optimized with resources appropriate for its specific role
+- Physical or virtual servers configured to handle specialized workloads
+- Improved security through separation of components
+
+### Load Balancer Cluster (HAproxy)
+The HAproxy load balancers are configured as a cluster to:
+- Eliminate the load balancer as a single point of failure
+- Provide high availability for the traffic distribution layer
+- Enable maintenance of one load balancer without downtime
+- Handle greater volumes of incoming traffic
+- Allow for seamless scalability as traffic increases
+
+### Dedicated Web Server (Nginx)
+- Optimized for handling HTTP requests and serving static content
+- Can be configured specifically for web traffic patterns
+- Scales independently based on web traffic needs
+- Security can be tailored for public-facing services
+- Improved performance through dedicated resources
+
+### Dedicated Application Server
+- Resources dedicated to business logic and dynamic content generation
+- Can be optimized for application processing needs
+- Scales based on computational requirements rather than connection volume
+- More isolated from direct public access for improved security
+- Better resource management for application-specific tasks
+
+### Dedicated Database Server (MySQL)
+- Dedicated resources for data storage and retrieval operations
+- Can be optimized specifically for database performance
+- I/O operations don't compete with web or application processes
+- More secure due to isolation from direct public access
+- Can be scaled or replicated based on data storage and query requirements
+
+## Design Principles
+
+### Component Separation
+The separation of components onto dedicated servers provides:
+- Clear responsibilities for each server in the infrastructure
+- Optimized resource allocation based on specific component needs
+- Ability to scale individual components based on their unique bottlenecks
+- Improved security through isolation of services
+- Enhanced maintenance capabilities with minimal cross-service impact
+
+### High Availability
+The infrastructure emphasizes high availability through:
+- Redundant load balancers to eliminate single points of failure
+- Ability to perform maintenance without service interruptions
+- Capacity to handle sudden traffic increases
+- Better fault isolation through component separation
+
+### Scalability
+The design supports improved scalability by:
+- Allowing horizontal scaling of specific components as needed
+- Supporting addition of more specialized servers to any tier
+- Enabling targeted resource allocation based on performance metrics
+- Facilitating different scaling strategies for different components
+
+This architecture follows the principle of separation of concerns, where each component has a clear responsibility, making the system more maintainable, scalable, and secure. By isolating components, issues in one component are less likely to affect others, and each can be scaled, optimized, and secured according to its specific requirements.

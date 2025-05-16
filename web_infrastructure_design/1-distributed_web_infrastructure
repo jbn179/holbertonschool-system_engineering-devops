@@ -1,0 +1,72 @@
+# Distributed Web Infrastructure Explanation
+
+![Distributed Web Infrastructure](./images/1-distributed_web_infrastructure.svg)
+
+## Infrastructure Overview
+This distributed web infrastructure hosts www.foobar.com with enhanced reliability and capacity:
+- 3 servers (1 original + 2 new)
+- 1 load balancer (HAproxy)
+- 3 web servers (Nginx)
+- 3 application servers
+- 3 sets of application files (codebase)
+- 1 database (MySQL) set up as Primary-Replica cluster with 2 replicas
+
+## Additional Elements and Their Purpose
+
+### Load Balancer (HAproxy)
+The load balancer is added to distribute incoming traffic between the two servers, which helps:
+- Improve availability by eliminating a single point of failure
+- Increase capacity to handle more user requests simultaneously
+- Provide better scalability as traffic grows
+- Enable seamless maintenance without complete downtime
+
+### Second Server
+The additional server provides:
+- Redundancy in case one server fails
+- Increased capacity to handle more traffic
+- Ability to perform maintenance on one server while the other remains active
+
+### Distribution Algorithm
+The HAproxy load balancer is configured with a Round Robin algorithm, which:
+- Distributes requests sequentially to each server in rotation
+- Treats all servers as equals with fair distribution
+- Is simple to implement and understand
+- Works well when servers have equal specifications and capacity
+
+### Load Balancer Configuration: Active-Active vs Active-Passive
+This setup uses an Active-Active configuration, meaning:
+- Both servers are actively receiving and processing requests simultaneously
+- The load is distributed across all available servers
+- Maximum resources are utilized at all times
+
+In contrast, an Active-Passive setup would have one server actively receiving requests while the other remains on standby, only becoming active if the primary server fails.
+
+### Database Primary-Replica (Master-Slave) Cluster
+The MySQL database is configured as a Primary-Replica cluster where:
+- The Primary node (Master) handles write operations and maintains the authoritative dataset
+- The Replica node (Slave) replicates data from the Primary
+- Changes made to the Primary are asynchronously copied to the Replica
+- This provides data redundancy and can improve read performance
+
+### Primary vs Replica Node for Application
+- Primary Node: Handles all write operations (INSERT, UPDATE, DELETE) and can handle read operations
+- Replica Node: Primarily handles read operations (SELECT) to distribute database load
+- The application must be configured to direct write queries to the Primary and can distribute read queries between both nodes
+
+## Infrastructure Issues
+
+### Single Points of Failure (SPOF)
+- The load balancer itself is a SPOF; if it fails, users cannot access the service
+- The database cluster has only one Primary node; if it fails before a Replica can be promoted, write operations will fail
+- There is only one Replica database; if it fails, we lose the redundancy benefit
+
+### Security Issues
+- No firewall is implemented, leaving servers vulnerable to unauthorized access and attacks
+- No HTTPS means data transmitted between users and the website is not encrypted, risking data privacy and integrity
+- No proper access controls for systems and data
+
+### Lack of Monitoring
+- Without monitoring, there's no visibility into system performance, resource usage, or potential issues
+- Problems might only be discovered after they affect users
+- No proactive identification of bottlenecks or capacity issues
+- No alerts for anomalies or outages
